@@ -31,7 +31,7 @@ public class Location {
     }
     
     public void addArrival(Flight f) {
-
+    	
 	}
 	
 	public void addDeparture(Flight f) {
@@ -46,7 +46,50 @@ public class Location {
 	 * @return "Flight <id> [departing/arriving] from <name> on <clashingFlightTime>". Return null if there is no clash.
 	 */
 	public String hasRunwayDepartureSpace(Flight f) {
-
+		for (Flight flight : FlightScheduler.getFlightsList()) {
+			int fHour = 0, fMinutes = 0, flightHour = 0, flightMinutes = 0;
+			String depOrArr = "";
+			String clashingTime = "";
+			
+    		if (f.departureTime.substring(0, 3).equals(flight.departureTime.substring(0,3))) {
+    			fHour = Integer.parseInt(f.departureTime.substring(4, 6));
+    			fMinutes = Integer.parseInt(f.departureTime.substring(7));
+    			flightHour = Integer.parseInt(flight.departureTime.substring(4, 6));
+    			flightMinutes = Integer.parseInt(flight.departureTime.substring(7));
+    			depOrArr = "departing";
+    			clashingTime = flight.departureTime;
+    			
+    		}
+    		else if (f.departureTime.substring(0, 3).equals(flight.getArrivalTime(flight.getDuration()).substring(0,3))) {
+    			fHour = Integer.parseInt(f.departureTime.substring(4, 6));
+    			fMinutes = Integer.parseInt(f.departureTime.substring(7));
+    			flightHour = Integer.parseInt(flight.getArrivalTime(flight.getDuration()).substring(4, 6));
+    			flightMinutes = Integer.parseInt(flight.getArrivalTime(flight.getDuration()).substring(7));
+    			depOrArr = "arriving";
+    			clashingTime = flight.getArrivalTime(flight.getDuration());
+    		}
+    		
+    		if (fHour == flightHour) {
+    			return "Flight " + flight.flightId + depOrArr + "from " + f.srcLocation + "on " + clashingTime;
+    		}
+    		else if (Math.abs(fHour - flightHour) == 1) {
+    			int biggerMinutes = 0;
+    			int smallerMinutes = 0;
+    			if (fHour > flightHour) {
+    				biggerMinutes = fMinutes;
+    				smallerMinutes = flightMinutes;
+    			} else {
+    				biggerMinutes = flightMinutes;
+    				smallerMinutes = fMinutes;
+    			}
+    			
+    			if (biggerMinutes - smallerMinutes >= 0) {
+    				return "Flight " + flight.flightId + depOrArr + "from " + f.srcLocation + "on " + clashingTime;
+    			}
+    			return null;
+    		}
+    	}
+		return null;
     }
 
     /**
@@ -56,6 +99,49 @@ public class Location {
 	 * @return String representing the clashing flight, or null if there is no clash. Eg. "Flight <id> [departing/arriving] from <name> on <clashingFlightTime>"
 	 */
 	public String hasRunwayArrivalSpace(Flight f) {
-
+		for (Flight flight : FlightScheduler.getFlightsList()) {
+			int fHour = 0, fMinutes = 0, flightHour = 0, flightMinutes = 0;
+			String depOrArr = "";
+			String clashingTime = "";
+			
+    		if (f.getArrivalTime(f.getDuration()).substring(0, 3).equals(flight.departureTime.substring(0,3))) {
+    			fHour = Integer.parseInt(f.getArrivalTime(f.getDuration()).substring(4, 6));
+    			fMinutes = Integer.parseInt(f.getArrivalTime(f.getDuration()).substring(7));
+    			flightHour = Integer.parseInt(flight.departureTime.substring(4, 6));
+    			flightMinutes = Integer.parseInt(flight.departureTime.substring(7));
+    			depOrArr = "departing";
+    			clashingTime = flight.departureTime;
+    			
+    		}
+    		else if (f.departureTime.substring(0, 3).equals(flight.getArrivalTime(flight.getDuration()).substring(0,3))) {
+    			fHour = Integer.parseInt(f.getArrivalTime(f.getDuration()).substring(4, 6));
+    			fMinutes = Integer.parseInt(f.getArrivalTime(f.getDuration()).substring(7));
+    			flightHour = Integer.parseInt(flight.getArrivalTime(flight.getDuration()).substring(4, 6));
+    			flightMinutes = Integer.parseInt(flight.getArrivalTime(flight.getDuration()).substring(7));
+    			depOrArr = "arriving";
+    			clashingTime = flight.getArrivalTime(flight.getDuration());
+    		}
+    		
+    		if (fHour == flightHour) {
+    			return "Flight " + flight.flightId + depOrArr + "from " + f.srcLocation + "on " + clashingTime;
+    		}
+    		else if (Math.abs(fHour - flightHour) == 1) {
+    			int biggerMinutes = 0;
+    			int smallerMinutes = 0;
+    			if (fHour > flightHour) {
+    				biggerMinutes = fMinutes;
+    				smallerMinutes = flightMinutes;
+    			} else {
+    				biggerMinutes = flightMinutes;
+    				smallerMinutes = fMinutes;
+    			}
+    			
+    			if (biggerMinutes - smallerMinutes >= 0) {
+    				return "Flight " + flight.flightId + depOrArr + "from " + f.srcLocation + "on " + clashingTime;
+    			}
+    			return null;
+    		}
+    	}
+		return null;
     }
 }

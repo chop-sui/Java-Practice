@@ -9,14 +9,77 @@ public class Flight {
 	double ticketPrice;
 	int numOfPassengersBooked;
 	
+	String[] days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
 	
-	public String getArrivalTime(double duration) {
+	public Flight (String flightId, String departureTime, Location srcLocation, Location dstLocation, int capacity, double ticketPrice, int numOfPassengersBooked) {
+		this.flightId = flightId;
+		this.departureTime = departureTime;
+		this.srcLocation = srcLocation;
+		this.dstLocation = dstLocation;
+		this.capacity = capacity;
+		this.ticketPrice = ticketPrice;
+		this.numOfPassengersBooked = numOfPassengersBooked;
+	}
+	
+	public Flight(String flightId, String departureTime, Location srcLocation, Location dstLocation, int capacity, double ticketPrice) {
+		this(flightId, departureTime, srcLocation, dstLocation, capacity, ticketPrice, 0);
+	}
+	
+	public Flight(String flightId, String departureTime, Location srcLocation, Location dstLocation, int capacity) {
+		this(flightId, departureTime, srcLocation, dstLocation, capacity, 0);
+	}
+	
+//	public int cmpTime(String departureTime, String arrivalTime) {
+//		String depDay = departureTime.substring(0, 3);
+//		String arrDay = arrivalTime.substring(0, 3);
+//		int depDayNum = 0;
+//		int arrDayNum = 0;
+//		for (int i = 0; i < days.length; i++) {
+//			if (days[i].equals(depDay)) {
+//				depDayNum = i;
+//			}
+//			if (days[i].equals(arrDay)) {
+//				arrDayNum = i;
+//			}
+//		}	
+//		int depHour = Integer.parseInt(departureTime.substring(4, 6));
+//		int depMinutes = Integer.parseInt(departureTime.substring(7));
+//		int arrHour = Integer.parseInt(arrivalTime.substring(4, 6));
+//		int arrMinutes = Integer.parseInt(arrivalTime.substring(7));
+//		
+//		if (arrDayNum)
+//	}
+	
+	public String getArrivalTime(double duration) {	
 		String day = this.departureTime.substring(0, 3);
+		int dayNum = 0;
+		for (int i = 0; i < days.length; i++) {
+			if (days[i].equals(day)) {
+				dayNum = i;
+				break;
+			}
+		}
 		int hour = Integer.parseInt(this.departureTime.substring(4, 6));
 		int minutes = Integer.parseInt(this.departureTime.substring(7));
 		
-		int new_minutes = minutes + duration;
+		int newMinutes = minutes + (int)duration;
+		int newHour = hour;
+		if (newMinutes > 60) {
+			newHour++;
+			if (newHour > 23) {
+				day = days[(dayNum + 1) % days.length];
+				newHour = 0;
+			}
+			newMinutes = 0;
+		}
+		String newHourStr = Integer.toString(newHour);
+		String newMinutesStr = Integer.toString(newMinutes);
+		if (newHour == 0) newHourStr = "0" + newHourStr;
+		if (newMinutes == 0) newMinutesStr = "0" + newMinutesStr;
 		
+		String arrivalTime = day + " " + newHourStr + ":" + newMinutesStr;
+		
+		return arrivalTime;	
 	}
 	
 	// Calculates the ticketPrice
@@ -49,8 +112,13 @@ public class Flight {
 
     //book the given number of passengers onto this flight, returning the total cost
     public double book(int num) {
-    	this.numOfPassengersBooked += num;
-    	return 
+    	double totalCost = 0;
+    	for (int i = 1; i <= num; i++) {
+    		this.numOfPassengersBooked += 1;
+    		totalCost += this.getTicketPrice();
+    	}
+    	
+    	return totalCost;
     }
 
     //return whether or not this flight is full
@@ -65,6 +133,7 @@ public class Flight {
 
     //get the layover time, in minutes, between two flights
     public static int layover(Flight x, Flight y) {
-
+    	return 0;
     }
+    	
 }
